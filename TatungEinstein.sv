@@ -183,10 +183,10 @@ wire [9:0] sound;
 assign DAC_L = { sound, 5'd0 };
 assign DAC_R = { sound, 5'd0 };
 
-dac #(16) dac_l (
+dac #(10) dac_l (
    .clk_i        (clk_sys),
    .res_n_i      (1      ),
-   .dac_i        ({sound,5'b0}),
+   .dac_i        (sound),
    .dac_o        (AUDIO_L)
 );
 
@@ -258,7 +258,7 @@ video_mixer  video_mixer
 (
    .*,
 
-   .clk_sys(clk_vid),
+   .clk_sys(clk_sys),
    .ce_pix(ce_pix),
    .ce_pix_actual(ce_pix),
    .hq2x(scale==1),
