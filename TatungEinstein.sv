@@ -142,18 +142,19 @@ mist_io #(.STRLEN($size(CONF_STR)>>3),.PS2DIV(100)) mist_io
 wire clk_sys;
 wire clk_vdp;
 wire clk_vid;
+wire locked;
 
 pll pll
 (
 	.inclk0(CLOCK_27),
 	.areset(0),
-	.locked(),
+	.locked(locked),
 	.c0(clk_sys), // 32
 	.c1(clk_vdp), // 10
 	.c2(clk_vid) // 40
 );
 
-wire reset =status[0] | buttons[1];
+wire reset =status[0] | buttons[1] | !locked;
 
 reg [2:0] clk_div;
 wire clk_cpu = clk_div[2]; // 4M
