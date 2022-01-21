@@ -39,4 +39,4 @@ c5_pin_model_dump.txt
 firmware/*.o
 firmware/*.asm
 *.log
-
+upd.sh
