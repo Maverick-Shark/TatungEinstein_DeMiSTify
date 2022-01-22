@@ -41,7 +41,13 @@ module guest_mist
         output  [5:0] VGA_R,
         output  [5:0] VGA_G,
         output  [5:0] VGA_B,
-
+			output vga_blank,
+			output vga_clk,
+			output  [5:0] vga_x_r,
+			output  [5:0] vga_x_g,
+			output  [5:0] vga_x_b,
+			output 		  vga_x_hs,
+			output 		  vga_x_vs,
 		  output [12:0] SDRAM_A,
 		  inout  [15:0] SDRAM_DQ,
 		  output        SDRAM_DQML,
@@ -283,8 +289,20 @@ video_mixer  video_mixer
    .HSync(vga_hsync),
    .VSync(vga_vsync),
    .HBlank(vga_hblank),
-   .VBlank(vga_vblank)
+   .VBlank(vga_vblank),
+
+   //added for HDMI output
+   .vga_x_r(vga_x_r),
+   .vga_x_g(vga_x_g),
+   .vga_x_b(vga_x_b)
+
 );
+
+//added for HDMI output
+assign vga_blank = vga_hblank | vga_vblank;     
+assign vga_clk = clk_sys;     
+assign vga_x_hs = vga_hsync;
+assign vga_x_vs = vga_vsync;
 
 
 endmodule
