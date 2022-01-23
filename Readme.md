@@ -1,7 +1,11 @@
 Tatung Einstein Demistified
 ===============================
 
-See more info on each board folder.
+DeMiSTified board ports from original MiSTer core by Pierco (Pierre Cornier) https://github.com/MiSTer-devel/TatungEinstein_MiSTer/
+
+More info about [Demistify](https://github.com/robinsonb5/DeMiSTify) on deca folder.
+
+Follows original readme content.
 
 
 
