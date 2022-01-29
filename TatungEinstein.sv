@@ -16,6 +16,10 @@
 //
 //============================================================================
 
+
+
+
+
 module guest_mist
 (       
         output        LED,                                              
@@ -25,7 +29,6 @@ module guest_mist
         output        AUDIO_R, 
 		  output [15:0]  DAC_L, 
 		  output [15:0]  DAC_R, 
-        input         TAPE_IN,
         input         UART_RX,
         output        UART_TX,
         input         SPI_SCK,
@@ -38,7 +41,13 @@ module guest_mist
         output  [5:0] VGA_R,
         output  [5:0] VGA_G,
         output  [5:0] VGA_B,
-
+			output vga_blank,
+			output vga_clk,
+			output  [5:0] vga_x_r,
+			output  [5:0] vga_x_g,
+			output  [5:0] vga_x_b,
+			output 		  vga_x_hs,
+			output 		  vga_x_vs,
 		  output [12:0] SDRAM_A,
 		  inout  [15:0] SDRAM_DQ,
 		  output        SDRAM_DQML,
@@ -68,8 +77,10 @@ wire [2:0] scale = status[5:3];
 
 `include "build_id.v" 
 localparam CONF_STR = {
-	"Tatung;;",
+	"TatungEinstein;;",
 	"S0,DSK,Mount Disk 0:;",
+ 	//"S1,DSK,Mount Disk 1:;",
+	//"O89,Aspect ratio,Original,Full Screen,[ARC1],[ARC2];",
 	"O35,Scandoubler Fx,None,HQ2x,CRT 25%,CRT 50%,CRT 75%;",
 	"O2,Joystick,Digital,Analog;",
 	"O6,Diagnostic ROM mounted,Off,On;",
@@ -92,10 +103,10 @@ wire  [7:0] sd_buff_din;
 wire        sd_buff_wr;
 wire  [1:0] img_mounted;
 wire  [1:0] img_readonly;
-wire [63:0] img_size;
+wire [31:0] img_size;
 
-wire [15:0] joystick_0;
-wire [15:0] joystick_1;
+wire [7:0] joystick_0;
+wire [7:0] joystick_1;
 wire [15:0] joystick_analog_0;
 wire [15:0] joystick_analog_1;
 
@@ -147,7 +158,7 @@ wire locked;
 pll pll
 (
 	.inclk0(CLOCK_27),
-	.areset(0),
+	.areset(1'b0),
 	.locked(locked),
 	.c0(clk_sys), // 32
 	.c1(clk_vdp), // 10
@@ -278,8 +289,20 @@ video_mixer  video_mixer
    .HSync(vga_hsync),
    .VSync(vga_vsync),
    .HBlank(vga_hblank),
-   .VBlank(vga_vblank)
+   .VBlank(vga_vblank),
+
+   //added for HDMI output
+   .vga_x_r(vga_x_r),
+   .vga_x_g(vga_x_g),
+   .vga_x_b(vga_x_b)
+
 );
+
+//added for HDMI output
+assign vga_blank = vga_hblank | vga_vblank;     
+assign vga_clk = clk_sys;     
+assign vga_x_hs = vga_hsync;
+assign vga_x_vs = vga_vsync;
 
 
 endmodule

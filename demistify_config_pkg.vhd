@@ -32,10 +32,10 @@ constant demistify_serialdebug : std_logic := '0';
 
 
 	-- Declare the guest component
+	-- input ports defined as `ifdef DEMISTIFY  make sure that have default values
 	
-	COMPONENT guest_mist -- Rename to match the guest core
-		PORT
-		(
+	COMPONENT guest_mist
+		PORT (
 			CLOCK_27 :	IN STD_LOGIC;	-- Comment out one of these two lines
 --			CLOCK_27 :	IN STD_LOGIC_VECTOR(1 downto 0);	-- to match the guest core
 			SDRAM_DQ		:	 INOUT STD_LOGIC_VECTOR(15 DOWNTO 0);
@@ -74,6 +74,15 @@ constant demistify_serialdebug : std_logic := '0';
 			VGA_R		:	 OUT STD_LOGIC_VECTOR(5 DOWNTO 0);
 			VGA_G		:	 OUT STD_LOGIC_VECTOR(5 DOWNTO 0);
 			VGA_B		:	 OUT STD_LOGIC_VECTOR(5 DOWNTO 0);
+
+				vga_blank	:	 OUT STD_LOGIC;
+				vga_clk		:	 OUT STD_LOGIC;
+				vga_x_r 	: out STD_LOGIC_VECTOR(5 DOWNTO 0);
+				vga_x_g 	: out STD_LOGIC_VECTOR(5 DOWNTO 0);
+				vga_x_b 	: out STD_LOGIC_VECTOR(5 DOWNTO 0);
+				vga_x_hs 	: out std_logic;
+				vga_x_vs 	: out std_logic;
+
 			AUDIO_L  : out std_logic;
 			AUDIO_R  : out std_logic
 		);
