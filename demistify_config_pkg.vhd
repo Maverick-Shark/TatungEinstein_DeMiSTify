@@ -8,7 +8,7 @@ use ieee.numeric_std.all;
 
 package demistify_config_pkg is
 constant demistify_romspace : integer := 14; -- 16k address space to accommodate 12K of ROM
-constant demistify_romsize1 : integer := 13; -- 8k fot the first chunk
+constant demistify_romsize1 : integer := 13; -- 8k for the first chunk
 constant demistify_romsize2 : integer := 12; -- 4k for the second chunk, mirrored across the last 4k
 
 -- Core-specific button mapping.
@@ -23,10 +23,14 @@ constant demistify_romsize2 : integer := 12; -- 4k for the second chunk, mirrore
 -- Since Megadrive button B is the most important, we map button 1 -> B, button 2 -> C, button 3 -> A
 -- and button 4 -> Start, hence button1 = 5, button2 = 6, button3 = 4 and button4 = 7,
 
+constant demistify_joybits : integer := 8;
+
 constant demistify_button1 : integer := 4;
 constant demistify_button2 : integer := 5;
 constant demistify_button3 : integer := 6;
 constant demistify_button4 : integer := 7;
+constant demistify_button5 : integer := 8;
+constant demistify_button6 : integer := 9;
 
 constant demistify_serialdebug : std_logic := '0';
 
@@ -34,10 +38,10 @@ constant demistify_serialdebug : std_logic := '0';
 	-- Declare the guest component
 	-- input ports defined as `ifdef DEMISTIFY  make sure that have default values
 	
-	COMPONENT guest_mist
+	COMPONENT guest_top
 		PORT (
 			CLOCK_27 :	IN STD_LOGIC;	-- Comment out one of these two lines
---			CLOCK_27 :	IN STD_LOGIC_VECTOR(1 downto 0);	-- to match the guest core
+	--		CLOCK_27 :	IN STD_LOGIC_VECTOR(1 downto 0);	-- to match the guest core
 			SDRAM_DQ		:	 INOUT STD_LOGIC_VECTOR(15 DOWNTO 0);
 			SDRAM_A		:	 OUT STD_LOGIC_VECTOR(12 DOWNTO 0);
 			SDRAM_DQML		:	 OUT STD_LOGIC;
@@ -57,17 +61,16 @@ constant demistify_serialdebug : std_logic := '0';
 			SPI_SCK		:	 IN STD_LOGIC;
 			SPI_SS2		:	 IN STD_LOGIC;
 			SPI_SS3		:	 IN STD_LOGIC;
-			--SPI_SS4		:	 IN STD_LOGIC;
-			CONF_DATA0		:	 IN STD_LOGIC;
+	--		SPI_SS4		:	 IN STD_LOGIC;
+			CONF_DATA0	:	 IN STD_LOGIC;
 			
-			UART_RX     :   IN STD_LOGIC;
-			UART_TX     :   OUT STD_LOGIC;
+			UART_RX		:	 IN STD_LOGIC;
+			UART_TX		:	 OUT STD_LOGIC;
 			
-			LED         :   OUT STD_LOGIC;
+			LED		:	 OUT STD_LOGIC;
 			
-			DAC_L       :   OUT std_logic_vector(15 downto 0);
-			DAC_R       :   OUT std_logic_vector(15 downto 0);
-			
+			DAC_L		:	 OUT STD_LOGIC_VECTOR(15 downto 0);
+			DAC_R		:	 OUT STD_LOGIC_VECTOR(15 downto 0);
 
 			VGA_HS		:	 OUT STD_LOGIC;
 			VGA_VS		:	 OUT STD_LOGIC;
@@ -75,18 +78,18 @@ constant demistify_serialdebug : std_logic := '0';
 			VGA_G		:	 OUT STD_LOGIC_VECTOR(5 DOWNTO 0);
 			VGA_B		:	 OUT STD_LOGIC_VECTOR(5 DOWNTO 0);
 
-				vga_blank	:	 OUT STD_LOGIC;
-				vga_clk		:	 OUT STD_LOGIC;
-				vga_x_r 	: out STD_LOGIC_VECTOR(5 DOWNTO 0);
-				vga_x_g 	: out STD_LOGIC_VECTOR(5 DOWNTO 0);
-				vga_x_b 	: out STD_LOGIC_VECTOR(5 DOWNTO 0);
-				vga_x_hs 	: out std_logic;
-				vga_x_vs 	: out std_logic;
+			vga_blank	:	 OUT STD_LOGIC;
+			vga_clk		:	 OUT STD_LOGIC;
+			vga_x_r 	:	 OUT STD_LOGIC_VECTOR(5 DOWNTO 0);
+			vga_x_g 	:	 OUT STD_LOGIC_VECTOR(5 DOWNTO 0);
+			vga_x_b 	:	 OUT STD_LOGIC_VECTOR(5 DOWNTO 0);
+			vga_x_hs 	:	 OUT STD_LOGIC;
+			vga_x_vs 	:	 OUT STD_LOGIC;
 
-			AUDIO_L  : out std_logic;
-			AUDIO_R  : out std_logic
+			AUDIO_L 	:	 OUT STD_LOGIC;
+			AUDIO_R 	:	 OUT STD_LOGIC
 		);
 	END COMPONENT;
-	
+
 
 end package;
