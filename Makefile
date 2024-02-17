@@ -7,7 +7,15 @@ BOARD=
 ROMSIZE1=8192
 ROMSIZE2=4096
 
-all: $(DEMISTIFYPATH)/site.template $(DEMISTIFYPATH)/site.mk $(SUBMODULES) firmware init compile tns
+# Prevent MiST / MiSTer targets being built if the user supplied the BOARDS variable when invoking make.
+TARGETS_NOMIST=$(DEMISTIFYPATH)/site.template $(DEMISTIFYPATH)/site.mk $(SUBMODULES) firmware init compile tns
+ifndef BOARDS
+	TARGETS = $(TARGETS_NOMIST) mist mister
+else
+	TARGETS = $(TARGETS_NOMIST)
+endif
+
+all: $(TARGETS)
 # Use the file least likely to change within DeMiSTify to detect submodules!
 $(DEMISTIFYPATH)/COPYING:
 	git submodule update --init --recursive
@@ -21,6 +29,7 @@ $(DEMISTIFYPATH)/site.mk: $(DEMISTIFYPATH)/COPYING
 	$(error site.mk not found.)
 
 include $(DEMISTIFYPATH)/site.mk
+include $(DEMISTIFYPATH)/EightThirtyTwo/check_os.mk
 
 $(DEMISTIFYPATH)/EightThirtyTwo/Makefile:
 	git submodule update --init --recursive
@@ -30,29 +39,29 @@ $(SUBMODULES): $(DEMISTIFYPATH)/EightThirtyTwo/Makefile
 
 .PHONY: firmware
 firmware: $(SUBMODULES)
-	make -C firmware -f ../$(DEMISTIFYPATH)/firmware/Makefile DEMISTIFYPATH=../$(DEMISTIFYPATH) ROMSIZE1=$(ROMSIZE1) ROMSIZE2=$(ROMSIZE2)
+	make -C firmware -f ../$(DEMISTIFYPATH)/firmware/Makefile DEMISTIFYPATH=../$(DEMISTIFYPATH) ROMSIZE1=$(ROMSIZE1) ROMSIZE2=$(ROMSIZE2) DETECTED_OS=$(DETECTED_OS)
 
 .PHONY: firmware_clean
 firmware_clean: $(SUBMODULES)
-	make -C firmware -f ../$(DEMISTIFYPATH)/firmware/Makefile DEMISTIFYPATH=../$(DEMISTIFYPATH) ROMSIZE1=$(ROMSIZE1) ROMSIZE2=$(ROMSIZE2) clean
+	make -C firmware -f ../$(DEMISTIFYPATH)/firmware/Makefile DEMISTIFYPATH=../$(DEMISTIFYPATH) ROMSIZE1=$(ROMSIZE1) ROMSIZE2=$(ROMSIZE2) DETECTED_OS=$(DETECTED_OS) clean
 
 .PHONY: init
 init:
-	make -f $(DEMISTIFYPATH)/Makefile DEMISTIFYPATH=$(DEMISTIFYPATH) PROJECTTOROOT=$(PROJECTTOROOT) PROJECTPATH=$(PROJECTPATH) PROJECTS=$(PROJECT) BOARD=$(BOARD) init 
+	make -f $(DEMISTIFYPATH)/Makefile DEMISTIFYPATH=$(DEMISTIFYPATH) PROJECTTOROOT=$(PROJECTTOROOT) PROJECTPATH=$(PROJECTPATH) PROJECTS=$(PROJECT) BOARD=$(BOARD) DETECTED_OS=$(DETECTED_OS) init
 
 .PHONY: compile
 compile: 
-	make -f $(DEMISTIFYPATH)/Makefile DEMISTIFYPATH=$(DEMISTIFYPATH) PROJECTTOROOT=$(PROJECTTOROOT) PROJECTPATH=$(PROJECTPATH) PROJECTS=$(PROJECT) BOARD=$(BOARD) compile
+	make -f $(DEMISTIFYPATH)/Makefile DEMISTIFYPATH=$(DEMISTIFYPATH) PROJECTTOROOT=$(PROJECTTOROOT) PROJECTPATH=$(PROJECTPATH) PROJECTS=$(PROJECT) BOARD=$(BOARD) DETECTED_OS=$(DETECTED_OS) compile
 
 .PHONY: clean
 clean:
-	make -f $(DEMISTIFYPATH)/Makefile DEMISTIFYPATH=$(DEMISTIFYPATH) PROJECTTOROOT=$(PROJECTTOROOT) PROJECTPATH=$(PROJECTPATH) PROJECTS=$(PROJECT) BOARD=$(BOARD) clean
+	make -f $(DEMISTIFYPATH)/Makefile DEMISTIFYPATH=$(DEMISTIFYPATH) PROJECTTOROOT=$(PROJECTTOROOT) PROJECTPATH=$(PROJECTPATH) PROJECTS=$(PROJECT) BOARD=$(BOARD) DETECTED_OS=$(DETECTED_OS) clean
 
 .PHONY: tns
 tns:
 	@for BOARD in ${BOARDS}; do \
 		echo $$BOARD; \
-		grep -r Design-wide\ TNS $$BOARD/output_files/*.rpt; \
+		grep -r Design-wide\ TNS $$BOARD/output_files/*.rpt || echo "No data for $$BOARD"; \
 		echo -ne '\007'; \
 	done
 
