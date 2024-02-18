@@ -20,7 +20,7 @@
 
 
 
-module guest_mist
+module guest_top
 (       
         output        LED,                                              
         output        VGA_HS,

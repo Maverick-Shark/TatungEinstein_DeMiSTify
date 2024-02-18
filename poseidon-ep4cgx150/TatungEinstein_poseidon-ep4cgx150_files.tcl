@@ -1,5 +1,5 @@
 set_global_assignment -name PRE_FLOW_SCRIPT_FILE quartus_sh:../build_id.tcl
-set_global_assignment -name QIP_FILE ../FILES.qip
+set_global_assignment -name QIP_FILE ../files.qip
 set_global_assignment -name QIP_FILE ../sys/sys.qip
 set_global_assignment -name QIP_FILE ../DeMiSTify/controller/controller.qip
 set_global_assignment -name VHDL_FILE ../demistify_config_pkg.vhd

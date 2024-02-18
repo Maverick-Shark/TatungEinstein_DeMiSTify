@@ -38,7 +38,7 @@ constant demistify_serialdebug : std_logic := '0';
 	-- Declare the guest component
 	-- input ports defined as `ifdef DEMISTIFY  make sure that have default values
 	
-	COMPONENT guest_top
+	COMPONENT guest_top -- Rename to match the guest core (<board>_top.sv)
 		PORT (
 			CLOCK_27 :	IN STD_LOGIC;	-- Comment out one of these two lines
 	--		CLOCK_27 :	IN STD_LOGIC_VECTOR(1 downto 0);	-- to match the guest core
